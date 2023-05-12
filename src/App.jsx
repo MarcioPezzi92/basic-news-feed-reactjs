@@ -1,15 +1,24 @@
-import { Post } from "./Post";
 import { Header } from "./components/header";
-import "./styles.css";
+
+// styles
+import styles from "./App.module.css"
+import "./global.css";
+import { Sidebar } from "./components/Sidebar";
+import { Post } from "./components/Post";
 
 function App() {
   return (
     <div>
       <Header />
-      <Post
-        author="Fabrício Mendes"
-        content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis saepe reprehenderit, quibusdam facilis deleniti excepturi amet, sunt natus quam aperiam alias cumque eveniet est atque ipsum consectetur quia quaerat voluptates!"
-      />
+
+      <div className={styles.wrapper}>
+        <Sidebar />
+        <main>
+          <Post />
+          <Post />
+          <Post />
+        </main>
+      </div>
     </div>
   );
 }

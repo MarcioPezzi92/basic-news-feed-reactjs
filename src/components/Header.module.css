@@ -1,4 +1,23 @@
 .header {
-  background: #333;
-  height: 80px;
+  padding: 1.25rem 0;
+  background: var(--gray-800);
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  color: var(--white);
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  padding: 1rem;
+  background: var(--white);
+  border-radius: 50%;
+  color: var(--gray-800);
+  font-size: 3rem;
+  font-weight: 600;
 }
