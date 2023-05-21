@@ -1,46 +1,86 @@
+import { format, formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
-import styles from "./Post.module.css";
 
-export function Post() {
+import styles from "./Post.module.css";
+import { useState } from "react";
+
+
+export function Post({ author, content, publishedAt }) {
+
+  const [comments, setComments] = useState([
+    'Post legal, hein?'
+  ]);
+
+  const [newCommentText, setNewCommentText] = useState('');
+
+  const formattedPublishedAt = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {locale: ptBR});
+
+  const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, {locale: ptBR, addSuffix: true});
+
+  function handleCreateNewComment() {
+    event.preventDefault();
+
+    setComments([...comments, newCommentText]);
+
+    setNewCommentText('');
+  }
+
+  function handleNewCommentChange() {
+    setNewCommentText(event.target.value);
+  }
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar hasBorder src="https://github.com/Jefferzom.png" />
+          <Avatar hasBorder src={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Jefferzom</strong>
-            <span>Front-end Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.profession}</span>
           </div>
         </div>
 
-        <time title="10 de Maio às 20:22h" dateTime="2023-05-10 20:22:13">Publicado há 1h</time>
+        <time title={ formattedPublishedAt } dateTime={publishedAt.toISOString()}> 
+          {publishedAtRelativeToNow}
+        </time>
       </header>
 
       <div className={styles.content}>
-        <p>Fala galera 👋</p>
-        <p>Gostaria de avisar que estamos chegando ao fim do projeto. Estamos de parabéns e foi um grande prazer trabalhar com vocês!</p>
-        <p>Clique no link abaixo para conferir e não esqueça de compartilhar esta nossa vitória!</p>
-        <p>👉 {'  '} <a href="#">investidor-inteligente.com</a> </p>
-        <p> 
-          <a href="#">#lançamento</a> {'  '}
-          <a href="#">#consultoria</a> {'  '}
-          <a href="#">#investimentos</a> {'  '}
-        </p>
+        {content.map(line => {
+          if(line.type === "paragraph") {
+            return <p key={line.content}>{line.content}</p>
+          } else if (line.type === "link") {
+            return <p key={line.content}><a href={line.content} target="_blank">{line.content}</a></p>
+          }
+        })}
       </div>
 
-      <form className={styles.commentForm}>
+      <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Feedback</strong>
-        <textarea placeholder="Deixe seu comentário" />
+
+        <textarea 
+          name="comment" 
+          placeholder="Deixe seu comentário" 
+          value={newCommentText}
+          onChange={handleNewCommentChange}
+        />
+
         <footer>
           <button type="submit">Publicar</button>
         </footer>
       </form>
+
       <div className={styles.commentList}>
-        <Comment />
-        <Comment />
-        <Comment />
+        { 
+          comments.map(comment => {
+            return <Comment content={comment} key={comment} />
+          })
+        }
       </div>
+
     </article>
   )
 }
